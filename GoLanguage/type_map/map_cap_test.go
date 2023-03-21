@@ -1,4 +1,4 @@
-package maps
+package __
 
 import (
 	"log"
@@ -40,4 +40,3 @@ func TestMemoryRelease(t *testing.T) {
 	runtime.ReadMemStats(&ms)
 	log.Printf("Alloc = %v MiB", ms.Alloc/1e6)
 }
-

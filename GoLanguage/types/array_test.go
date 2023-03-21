@@ -66,3 +66,16 @@ func Test2dArray(t *testing.T) {
 	a = [2][3]int{{2, 4, 6}, {3, 6, 9}}
 	log.Printf("%v\n", a) // [[2 4 6] [3 6 9]
 }
+
+// TestJaggedArray tests creating a 2d "array" with slices
+func TestJaggedArray(t *testing.T) {
+	a2 := [...][]int{{1, 2, 3, 4}, nil, {5, 6}}
+	log.Println(a2) // [[1 2 3 4] [] [5 6]]
+
+	for _, a1 := range a2 {
+		for _, e := range a1 {
+			log.Println(e)
+		}
+		log.Println("--")
+	}
+}
