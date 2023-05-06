@@ -16,7 +16,7 @@ func TestV9(t *testing.T) {
 		Email string `validate:"required,email"`
 	}{
 		Name:  "",
-		Email: "x",
+		Email: "x@y",
 	}
 	err := val.New().Struct(d)
 	for _, e := range err.(val.ValidationErrors) {

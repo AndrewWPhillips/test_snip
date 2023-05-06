@@ -1,5 +1,8 @@
 package __
 
+// This embed directory is for tests of embedded structs (called mixins in some languages).
+// For embedding files into the binary using //go:embed - see separate directives tests.
+
 import (
 	"log"
 	"testing"

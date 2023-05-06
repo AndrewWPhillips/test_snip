@@ -1,6 +1,7 @@
 package __
 
 import (
+	"bytes"
 	"log"
 	"math"
 	"testing"
@@ -125,4 +126,14 @@ func TestModifyKey(t *testing.T) {
 		}
 	}
 	log.Println(mm) // map[1,2:1 3:3]
+}
+
+func TestQuizQ18(t *testing.T) {
+	s := bytes.NewBufferString("string")
+	a := s.String()
+	b := s.Bytes()
+	m := make(map[interface{}]int)
+	m[a] = 1
+	m[b] = 2
+	log.Println(m[a])
 }
