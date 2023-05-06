@@ -50,5 +50,4 @@ func TestAnonStruct2(t *testing.T) {
 
 	fmt.Println(m)
 	fff(m) // map[{1 a}:3.14]
-
 }
