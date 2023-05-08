@@ -30,3 +30,18 @@ func TestNilSlice(t *testing.T) {
 	//log.Println(ss[0]) // panic  *** inconsistent with map
 	//ss[0] = 42 // panic!!
 }
+
+type MyError struct{}
+
+func (MyError) Error() string { return "ERROR" }
+
+func stub() *MyError { return nil }
+
+func TestNilError(t *testing.T) {
+	var err error = stub()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	log.Println("OK")
+}

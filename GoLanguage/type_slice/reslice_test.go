@@ -1,6 +1,7 @@
 package __
 
 import (
+	"fmt"
 	"log"
 	"testing"
 )
@@ -22,4 +23,11 @@ func TestResliceLiterals(t *testing.T) {
 	log.Println([]int{42, 43, 44, 0, 0}[:2]) // OK can re-slice a slice literal
 
 	log.Println("23400"[:2]) // OK to re-slice a string literal
+}
+
+func TestStartAfterEnd(t *testing.T) {
+	v := [...]int{0, 1, 2, 3, 4, 5}
+	w := v[:2]
+	fmt.Println(w[3:5])
+	fmt.Println(w[3:])
 }

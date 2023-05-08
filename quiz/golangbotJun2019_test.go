@@ -1,6 +1,7 @@
 package __
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -11,37 +12,36 @@ import (
 // I got 1 and 2 wrong because I did not read closely
 // I got 11 wrong because I forgot when defer func args are evaluated
 
-func hello() []string {
-	return nil
+func stub() error {
+	return errors.New("ERROR")
 }
 
 func TestQuiz1(t *testing.T) {
-	h := hello // h is func not slice
-	if h == nil {
-		log.Println("nil")
-	} else {
-		log.Println("not nil")
+	result := stub
+	if result != nil {
+		log.Println(result())
+		return
 	}
+	log.Println("OK")
 }
 
 func TestQuiz2(t *testing.T) {
-	i := 2
-	s := "1000"
+	i, s := 1, "100"
 	if len(s) > 1 {
 		i, _ := strconv.Atoi(s)
-		i = i + 5
+		i++
 	}
-	fmt.Println(i) // 2
+	fmt.Println(i) // 1
 }
 
-func hello2(num ...int) {
-	num[0] = 18
+func ten(num ...int) {
+	num[0] = 10
 }
 
 func TestQuiz3(t *testing.T) {
 	i := []int{5, 6, 7}
-	hello2(i...)
-	fmt.Println(i[0]) // 18
+	ten(i...)
+	fmt.Println(i[0]) // 10
 }
 
 func hello3(i int) {

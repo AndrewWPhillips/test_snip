@@ -23,6 +23,18 @@ func TestDeferReturn(t *testing.T) {
 	log.Println(f())
 }
 
+// TestDeferReturnWrong shows the wrong way defer statement
+func TestDeferReturnWrong(t *testing.T) {
+	f := func() int {
+		ret := 1
+		defer func() {
+			ret = 42 // by the time ret is set here it's value has already been used as the return value
+		}()
+		return ret
+	}
+	log.Println(f())
+}
+
 // TestEvalOrder tests when things are executed if defer func returns a func
 func TestEvalOrder(t *testing.T) {
 	f := func(f func()) func(f func()) {

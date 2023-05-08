@@ -15,3 +15,10 @@ func TestBinCompare(t *testing.T) {
 	log.Println(string(a) > string(c))
 	log.Println(len(a), len(b))
 }
+
+func TestRuneCast(t *testing.T) {
+	const s = "touché"
+	r := []rune(s)
+	b := []byte(s)
+	log.Println(len(s), len(r), len(b))
+}
