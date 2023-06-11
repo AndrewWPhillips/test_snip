@@ -48,7 +48,23 @@ func TestApprox(t *testing.T) {
 
 // Approx checks if 2 numbers are close to 3 decimal places
 // Note that this is good for "non-scientific" numbers like money
-// For scientific numbers you need to take into account the scale (so that 1e30 and 1.000001e30 are approx equal)
+// For scientific numbers you need to take into account the scale (see
+// Approx2 below), so that 1e30 and 1.000001e30 are approx equal
 func Approx(a, b float64) bool {
 	return math.Abs(a-b) < 0.001
+}
+
+// Approx2 checks if 2 numbers are approximately equal to 3 significant places.
+// Note that (unlike Approx above) this can handle very small and very large
+// numbers, but I haven't checked that it works in all cases.
+func Approx2(a, b float64) bool {
+	if a == b {
+		return true
+	}
+
+	fa, fb := math.Abs(a), math.Abs(b)
+	if fa > fb {
+		fa, fb = fb, fa
+	}
+	return (fb-fa)/fb > 0.001
 }

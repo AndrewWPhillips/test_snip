@@ -2,8 +2,24 @@ package __
 
 import (
 	"fmt"
+	"math"
 	"testing"
 )
+
+// TestNanMap
+// What does this print?
+// a. 0
+// b. 1
+// c. 2
+func TestNanMap(t *testing.T) {
+	m := make(map[float64]int)
+	m[math.NaN()] = 1
+	m[math.NaN()] = 2
+	delete(m, math.NaN())
+	fmt.Println(len(m))
+}
+
+// c because math.Nan() != math.NaN()
 
 func TestForEndValue(t *testing.T) {
 	var i, I int
@@ -50,4 +66,21 @@ func TestNilFuncInInterface(t *testing.T) {
 		fmt.Print("*** not nil ***")
 	}
 }
+
 // answer: b
+
+// What does this print?
+// a. 0 0 0
+// b. 1 0 0
+// c. 1 1 0
+// d. 1 1 1
+func TestShifty(t *testing.T) {
+	const c9 = 9
+	var v9 = 9
+	var a byte = 1 << c9 >> c9
+	var b byte = 1 << v9 >> c9
+	var c byte = 1 << v9 >> v9
+	fmt.Println(a, b, c)
+}
+
+// b. because 1 << v9 is treated as byte (because the expr. is assigned to a byte and the rest of the expr. only has constants)

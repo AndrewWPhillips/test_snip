@@ -6,8 +6,11 @@ import (
 	"encoding/json"
 	"log"
 	"math"
+	"reflect"
 	"testing"
 	"time"
+
+	"github.com/dolmen-go/jsonmap"
 )
 
 // TestUnmarshal tests decoding various JSON string into any type (interface{})
@@ -21,6 +24,7 @@ func TestUnmarshal(t *testing.T) {
 		"null":       {"null"}, // type = nil
 		"empty_obj":  {"{}"},   // type = map[string]interface{}
 		"empty_list": {"[]"},   // type = []interface{}
+		"full_list":  {`[{"Response": "1b"}, {"Response": "i", "Data": {"Contest": "203244481","BetType": 0 }}]`},
 		"map":        {`{"Name": "Wednesday", "Age": 6, "Parents": ["Gomez", "Morticia", null]}`},
 		"test2":      {`{ "a": [1, true] }`},
 		"test4":      {`{ "a": ["A", [2,3,4], null ] }`},
@@ -62,6 +66,106 @@ func TestUnmarshalArray(t *testing.T) {
 				log.Printf("%s: %v\n", name, result)
 			}
 		})
+	}
+}
+
+func fixup(buf []byte) []byte {
+	// Decode the JSON, remove some messages and then re-encode into tmp
+	var messages []jsonmap.Ordered
+	if err := json.Unmarshal(buf, &messages); err != nil {
+		log.Println("ERROR: fixup unmarshal:", err)
+		return buf
+	}
+	foundBetTypes := make(map[int64]struct{})
+	for i, message := range messages {
+		if message.Data["Response"] == "i" {
+			// we found a timestamp message - check if we have seen it before for the bet type
+			if d, ok := message.Data["Data"].(map[string]any); ok {
+				var betType int64
+				if number, ok := d["BetType"].(json.Number); ok {
+					betType, _ = number.Int64()
+				} else if f, ok := d["BetType"].(float64); ok {
+					betType = int64(f)
+				}
+				if betType == 0 { // not found or Win bet type
+					continue
+				}
+				if _, found := foundBetTypes[betType]; found {
+					// we've already seen a timestamp message for this bet type so remove it
+					messages[i] = jsonmap.Ordered{}
+				} else {
+					// remember that we have seen an "i" message for this bet type
+					foundBetTypes[betType] = struct{}{}
+				}
+			}
+		}
+	}
+	messagesCopy := make([]jsonmap.Ordered, 0, len(messages))
+	for _, m := range messages {
+		if m.Data != nil {
+			messagesCopy = append(messagesCopy, m)
+		}
+	}
+	newBuf, err := json.Marshal(messagesCopy)
+	if err != nil {
+		log.Println("ERROR: fixup marshal:", err)
+		return buf
+	}
+	return newBuf
+}
+
+func TestFixup(t *testing.T) {
+	tests := map[string]struct {
+		messages, expected string
+	}{
+		"Win         ": {
+			messages: `[{"Response":"i", "Data":{"BetType":1}}]`,
+			expected: `[{"Response":"i", "Data":{"BetType":1}}]`,
+		},
+		"Place       ": {
+			messages: `[{"Response":"i", "Data":{"BetType":1}}]`,
+			expected: `[{"Response":"i", "Data":{"BetType":1}}]`,
+		},
+		"Win Place   ": {
+			messages: `[{"Response":"i", "Data":{"BetType":0}}, {"Response":"i", "Data":{"BetType":1}}]`,
+			expected: `[{"Response":"i", "Data":{"BetType":0}}, {"Response":"i", "Data":{"BetType":1}}]`,
+		},
+		"Two Wins    ": {
+			messages: `[{"Response":"i", "Data":{"BetType":0}}, {"Response":"i", "Data":{"BetType":1}}]`,
+			expected: `[{"Response":"i", "Data":{"BetType":0}}, {"Response":"i", "Data":{"BetType":1}}]`,
+		},
+		"WinWinPlace ": {
+			messages: `[{"Response":"i", "Data":{"BetType":0}}, {"Response":"i", "Data":{"BetType":0}}, {"Response":"i", "Data":{"BetType":1}}]`,
+			expected: `[{"Response":"i", "Data":{"BetType":0}}, {"Response":"i", "Data":{"BetType":1}}]`,
+		},
+	}
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			test := test
+
+			// Encode the expected and received JSON so we can compare them reliably (ie. w/o map order problems)
+			var expected, got []any
+			if json.Unmarshal([]byte(test.expected), &expected) != nil {
+				t.Fatal("error encoding expected JSON:", test.expected)
+			}
+			if json.Unmarshal(fixup([]byte(test.messages)), &got) != nil {
+				t.Fatal("error encoding received JSON")
+			}
+			if !reflect.DeepEqual(expected, got) {
+				t.Fatalf("%s: got %v but expected %v\n", name, got, expected)
+			}
+		})
+	}
+}
+
+func TestUnmarshalBatch1(t *testing.T) {
+	var messages []any
+	batch1 := `[{"Response": "1b"}, {"Response": "i", "Data": {"Contest": "203244481","BetType": 0}}]`
+	if err := json.Unmarshal([]byte(batch1), &messages); err != nil {
+		t.Fatal(err)
+	}
+	for i, m := range messages {
+		log.Printf("%d %T %v\n", i, m, m)
 	}
 }
 
