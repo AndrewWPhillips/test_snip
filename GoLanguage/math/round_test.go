@@ -40,9 +40,8 @@ func TestApprox(t *testing.T) {
 	for name, d := range testData {
 		d := d
 		t.Run(name, func(t *testing.T) {
-			fmt.Printf("%40s: %f %f %t\n", "", d.a, d.b, Approx(d.a, d.b))
-		},
-		)
+			fmt.Printf("%40s: %f %f %t %t\n", "", d.a, d.b, Approx(d.a, d.b), Approx2(d.a, d.b))
+		})
 	}
 }
 
