@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+var TTT any // global used to make sure code is not optimized away
+
 type (
 	Store     map[string]int
 	StoreIter struct {
@@ -50,7 +52,7 @@ func BenchmarkIter(b *testing.B) { // 129 msec/op
 			v = iter.Value()
 		}
 	}
-	_ = v
+	TTT = v
 }
 
 func BenchmarkMap(b *testing.B) { // 60 msec/op
@@ -66,5 +68,5 @@ func BenchmarkMap(b *testing.B) { // 60 msec/op
 		for _, v = range m {
 		}
 	}
-	_ = v
+	TTT = v
 }

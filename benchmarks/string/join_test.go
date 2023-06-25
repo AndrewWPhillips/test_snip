@@ -1,4 +1,4 @@
-package string
+package __
 
 import (
 	"fmt"
@@ -6,12 +6,14 @@ import (
 	"testing"
 )
 
+var TTT any // global used to make sure code is not optimized away
+
 // BenchmarkConcat tests the performance of manual concatenation
 // Go 1.15.5,  Windows 10, Xeon(R) CPU E5-1650 v4 @ 3.60GHz : 107ns/op
 // Go 1.18.3,  Windows 10, Xeon(R) CPU E5-1650 v4 @ 3.60GHz : 105ns/op
 // Go 1.17.10, Windows 10, AMD Ryzen 5 2600 6core @ 3.40GHz : 207ns/op
 // Go 1.18.4,  Windows 10, AMD Ryzen 5 2600 6core @ 3.40GHz : 203ns/op
-func BenchmarkConcat(b *testing.B) { // 132 ns/op
+func BenchmarkConcat(b *testing.B) { // ~100 ns, 2 allocs/op
 	var result string
 	ss := []string{"sadsadsa", "dsadsakdas;k", "8930984"}
 	for i := 0; i < b.N; i++ {
@@ -22,7 +24,7 @@ func BenchmarkConcat(b *testing.B) { // 132 ns/op
 		}
 		result = s
 	}
-	fmt.Println(result)
+	TTT = result
 }
 
 // BenchmarkJoin tests the performance of strings.Join
@@ -36,15 +38,15 @@ func BenchmarkJoin(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		result = strings.Join(ss, " ")
 	}
-	fmt.Println(result)
+	TTT = result
 }
 
-//BenchmarkBuilder tests the performance of strings.Builder
+// BenchmarkBuilder tests the performance of strings.Builder
 // Go 1.15.5,  Windows 10, Xeon(R) CPU E5-1650 v4 @ 3.60GHz : 54ns/op
 // Go 1.18.3,  Windows 10, Xeon(R) CPU E5-1650 v4 @ 3.60GHz : 50ns/op
 // Go 1.17.10, Windows 10, AMD Ryzen 5 2600 6core @ 3.40GHz : 947ns/op ********
 // Go 1.18.4,  Windows 10, AMD Ryzen 5 2600 6core @ 3.40GHz : 942 ns/op
-func BenchmarkBuilder(b *testing.B) {
+func BenchmarkBuilder(b *testing.B) { // 1 alloc/op
 	var result string
 	ss := []string{"sadsadsa", "dsadsakdas;k", "8930984"}
 	for i := 0; i < b.N; i++ {
@@ -60,5 +62,15 @@ func BenchmarkBuilder(b *testing.B) {
 		}
 		result = s.String()
 	}
-	fmt.Println(result)
+	TTT = result
+}
+
+func BenchmarkSprintf(b *testing.B) { // ~200 ns, 4 allocs/op
+	var result string
+	ss := []string{"sadsadsa", "dsadsakdas;k", "8930984"}
+	for i := 0; i < b.N; i++ {
+		s := fmt.Sprintf("%s %s %s", ss[0], ss[1], ss[2])
+		result = s
+	}
+	TTT = result
 }
