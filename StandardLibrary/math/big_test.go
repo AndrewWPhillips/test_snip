@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-// TestBigCompare shows how to compare big ints
-func TestBigCompare(t *testing.T) {
+// TestBigIntCompare shows how to compare big ints
+func TestBigIntCompare(t *testing.T) {
 	a := big.NewInt(1)
 	b := big.NewInt(2)
 	c := big.NewInt(2)

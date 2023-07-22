@@ -1,5 +1,7 @@
 package __
 
+// tests various ways to search strings
+
 import (
 	"fmt"
 	"log"

@@ -48,6 +48,7 @@ func TestDeferArgEvalTime(t *testing.T) {
 	}(i)
 	i++
 }
+
 // answer: b (1st/3rd: i is evaluated when defer is called, for 2nd: i is captured)
 
 func f() error {

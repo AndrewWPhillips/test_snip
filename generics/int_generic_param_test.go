@@ -14,7 +14,7 @@ type (
 func F[I Sizer]() {
 	var dummy I
 	fmt.Println("Generic parameter is ", len(dummy))
-	const problem = len(dummy)
+	//const problem = len(dummy)
 }
 
 func TestSizer(t *testing.T) {

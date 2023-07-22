@@ -20,19 +20,19 @@ type mySlice []byte
 func TestStringToByteSlice(t *testing.T) {
 	var a myString = "a"
 	var b string = "b"
-	fmt.Println([]byte(a))
-	fmt.Println([]byte(b))
-	fmt.Println([]myByte(a))
-	fmt.Println([]myByte(b))
-	fmt.Println(mySlice(a))
-	fmt.Println(mySlice(b))
+	log.Println([]byte(a))
+	log.Println([]byte(b))
+	log.Println([]myByte(a))
+	log.Println([]myByte(b))
+	log.Println(mySlice(a))
+	log.Println(mySlice(b))
 }
 
 func TestByteSliceToString(t *testing.T) {
 	a := []myByte{65}
 	b := mySlice{66}
-	fmt.Println(string(a)) // OK in 1.18 but not in 1.15
-	fmt.Println(string(b))
-	fmt.Println(myString(a))
-	fmt.Println(myString(b))
+	log.Println(string(a)) // OK in 1.18 but not in 1.15
+	log.Println(string(b))
+	log.Println(myString(a))
+	log.Println(myString(b))
 }

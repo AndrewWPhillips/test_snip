@@ -1,5 +1,7 @@
 package __
 
+// tests various functions that return a modified string
+
 import (
 	"bufio"
 	"fmt"
