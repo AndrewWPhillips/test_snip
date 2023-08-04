@@ -39,12 +39,24 @@ func TestArrayKey2(t *testing.T) {
 	// Note: book "Way to Go" says you can't use an array as a map key but you clearly can (since arrays can be compared)
 }
 
+// TestNanKey shows the strange things that happen when you use a NaN as a map[float64]T key value
 func TestNanKey(t *testing.T) {
 	m := map[float64]int{
 		math.NaN(): 1,
 		math.Pi:    2,
 	}
 	log.Println(m[math.NaN()], m[math.Pi])
+}
+
+func TestNanKey2(t *testing.T) {
+	m := make(map[float64]int)
+
+	for i := 1; i < 10; i++ {
+		m[math.NaN()] = i
+	}
+	for k := range m {
+		log.Println(m[k])
+	}
 }
 
 func TestStructKey(t *testing.T) {
@@ -114,6 +126,11 @@ func TestInterfaceKey(t *testing.T) {
 	c = 3.3
 	m := map[interface{}]int{a: 1, b: 2, c: 3}
 	log.Printf("%v\n", m) // map[3.3:3 1:1 2:2]
+}
+
+func TestSMFInterfaceKey(t *testing.T) {
+	m := map[interface{}]int{interface{}([]int{}): 1} // panic: runtime error: hash of unhashable type []int
+	_ = m
 }
 
 func TestModifyKey(t *testing.T) {

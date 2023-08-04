@@ -60,8 +60,7 @@ func TestRefInterface1(t *testing.T) {
 	a = 1
 	b = a
 	b = 42
-	_ = b
-	log.Println(a) // 42
+	log.Println(a, b) // 1 42
 }
 
 // TestRefInterface2 shows that an interface is a "reference" type if it contains a reference type
@@ -101,9 +100,9 @@ func TestIsChanRefType(t *testing.T) {
 
 type myInt int
 
-func (m myInt) f() int {
-	m += 41
-	return int(m)
+func (m *myInt) f() int {
+	*m++
+	return int(*m)
 }
 
 // TestRefFunc shows that a func is a reference type
