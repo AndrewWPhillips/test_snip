@@ -25,7 +25,6 @@ func f[T T_INT]() int {
 }
 
 func TestArrayConstraintLen(t *testing.T) {
-	t.
-		log.Println(f[INT2]())
+	log.Println(f[INT2]())
 	log.Println(f[INT3]())
 }
