@@ -142,3 +142,15 @@ func TestIsFuncRefType(t *testing.T) {
 	*ptr = func() int { return 3 }
 	log.Println(v())
 }
+
+type sp struct {
+	p *int
+}
+
+func TestStructRefType(t *testing.T) {
+	n := 1
+	a := sp{p: &n}
+	b := a
+	*b.p = 42
+	log.Println(*a.p) // 42
+}
