@@ -12,7 +12,8 @@ func TestMultAssignWithField(t *testing.T) {
 	i, err := f()
 	log.Println(i, err)
 
+	var err2 error
 	a := struct{ b int }{2}
-	a.b, err2 := f()
+	a.b, err2 = f()
 	log.Println(a, err2)
 }
