@@ -1,12 +1,22 @@
 package __
 
 import (
+	"fmt"
 	"log"
 	"testing"
 )
 
-// TestDefer tests something we all should know
-func TestDefer(t *testing.T) {
+func f(i int) {
+	fmt.Println(i)
+}
+
+func TestDefer1(t *testing.T) {
+	a := 1
+	defer f(a)
+	a = 2
+}
+
+func TestDefer2(t *testing.T) {
 	a := 1
 	defer func() {
 		log.Println(a) // prints 2
@@ -14,37 +24,14 @@ func TestDefer(t *testing.T) {
 	a = 2
 }
 
-// TestDeferReturn tests changing the return value inside a defer statement
-func TestDeferReturn(t *testing.T) {
-	f := func() (ret int) {
-		defer func() { ret = 42 }()
-		return 1
+func g() func() {
+	fmt.Println("In g")
+	return func() {
+		fmt.Println("In deferred func")
 	}
-	log.Println(f())
 }
 
-// TestDeferReturnWrong shows the wrong way defer statement
-func TestDeferReturnWrong(t *testing.T) {
-	f := func() int {
-		ret := 1
-		defer func() {
-			ret = 42 // by the time ret is set here it's value has already been used as the return value
-		}()
-		return ret
-	}
-	log.Println(f())
-}
-
-// TestEvalOrder tests when things are executed if defer func returns a func
-func TestEvalOrder(t *testing.T) {
-	f := func(f func()) func(f func()) {
-		f()
-		return func(f func()) {
-			println("A")
-		}
-	}
-
-	defer f(func() { print("B") })(func() { print("D") })
-
-	print("C")
+func TestReturnDeferredFunc(t *testing.T) {
+	defer g()()
+	fmt.Println("In main")
 }

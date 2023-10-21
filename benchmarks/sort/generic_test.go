@@ -2,9 +2,8 @@ package __
 
 import (
 	"math/rand"
+	"slices"
 	"testing"
-
-	"golang.org/x/exp/slices"
 )
 
 func BenchmarkGenericSort0(b *testing.B) { // ~22ns/op (work computer)

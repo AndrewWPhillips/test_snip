@@ -49,3 +49,15 @@ func TestGoroutineLoop(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+func fff() func() {
+	i := 1
+	return func() {
+		log.Println(i)
+	}
+}
+
+func TestCapture2(t *testing.T) {
+	f := fff()
+	f()
+}
