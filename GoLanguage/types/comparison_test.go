@@ -1,6 +1,7 @@
 package __
 
 import (
+	"fmt"
 	"log"
 	"testing"
 )
@@ -90,4 +91,27 @@ func TestNil(t *testing.T) {
 	log.Println(i == nil) // false - i is of *int type with nil value
 	// An interface is == nil if it has a nil value and no type BUT it can be equal to a nil
 	// value of another type if it has a nil value and the same type
+}
+
+var emptyA struct{}
+
+func TestEmptyStruct(t *testing.T) {
+	var emptyB struct{}
+	p1, p2 := &emptyA, &emptyB
+	fmt.Printf("&a: %p, &b: %p \n", &emptyA, &emptyB)
+	fmt.Printf("&a == &b: %v \n", &emptyA == &emptyB)
+	fmt.Printf("p1 == p2: %v \n", p1 == p2)
+	fmt.Printf("%p %p\n", p1, p2)
+	emptyComp(p1, p2)
+	emptyComp2(p1, p2)
+}
+
+func emptyComp(p1, p2 *struct{}) {
+	fmt.Printf("p1 == p2: %v \n", p1 == p2)
+	fmt.Printf("%p %p\n", p1, p2)
+}
+
+func emptyComp2(p1, p2 any) {
+	fmt.Printf("p1 == p2: %v \n", p1 == p2)
+	fmt.Printf("%p %p\n", p1, p2)
 }

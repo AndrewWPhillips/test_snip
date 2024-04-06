@@ -13,7 +13,7 @@ func TestUintptr(t *testing.T) {
 	log.Println(p, *p) // 0xc000120438 3
 	uip := unsafe.Pointer(p)
 	p = nil
-	p = (*int)(unsafe.Pointer(uip))
+	p = (*int)(uip)
 	log.Println(p, *p) // 0xc000120438 3
 
 	c := make(chan int)

@@ -89,3 +89,20 @@ func TestString(t *testing.T) {
 		fmt.Println(i, c, string(c))
 	}
 }
+
+func TestLoopVarAddress(t *testing.T) {
+	for i := 0; i < 10; i++ {
+		fmt.Printf("%p\n", &i)
+	}
+}
+
+func TestLoopVarCapture(t *testing.T) {
+	var pf []func() int
+	for i := 0; i < 10; i++ {
+		pf = append(pf, func() int { return i })
+	}
+
+	for _, f := range pf {
+		fmt.Println(f())
+	}
+}

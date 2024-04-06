@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 
-	"golang.org/x/exp/slices"
+	"slices"
 )
 
 // TestSliceEqual1 shows that slices compare equal even if their capacities are different
@@ -31,4 +31,21 @@ func TestSlicesReplace(t *testing.T) {
 	b := slices.Replace(a, 1, 6, 22, 33)
 	log.Println(a)
 	log.Println(b)
+}
+
+func TestSliceInsert(t *testing.T) {
+	names := []any{"Alice", "Bob", "Vera"}
+	names = slices.Insert(names, 1, "Bill", "Billie")
+	names = slices.Insert(names, len(names), "Zac")
+	log.Println(names)
+}
+
+func TestSliceInsert2(t *testing.T) {
+	const c = "C"
+	var s string = "B"
+	n := []interface{}{"Z"}
+	n = slices.Insert(n, 0, "A") // OK
+	n = slices.Insert(n, 0, c)   // OK
+	n = slices.Inset(n, 0, s)    // []any does not implement ~[]string
+	log.Println(n)
 }

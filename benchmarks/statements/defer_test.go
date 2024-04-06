@@ -17,7 +17,7 @@ func BenchmarkNoDefer(b *testing.B) {
 	fmt.Println(saved)
 }
 
-func BenchmarkNoDeferFunc(b *testing.B) {
+func BenchmarkNoDeferFunc(b *testing.B) { // BenchmarkNoDeferFunc-12         194594614               13.62 ns/op
 	var mu sync.Mutex
 	saved := 0
 	for i := 0; i < b.N; i++ {
@@ -30,7 +30,7 @@ func BenchmarkNoDeferFunc(b *testing.B) {
 	fmt.Println(saved)
 }
 
-func BenchmarkDefer(b *testing.B) { // BenchmarkNoDeferFunc-12         194594614               13.62 ns/op
+func BenchmarkDefer(b *testing.B) { // BenchmarkDefer-12       137661675               17.05 ns/op
 	var mu sync.Mutex
 	saved := 0
 	for i := 0; i < b.N; i++ {
