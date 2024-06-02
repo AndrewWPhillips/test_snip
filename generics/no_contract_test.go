@@ -7,6 +7,8 @@ import (
 
 // TestNoContract checks the sort of error messages you might get when using a specific type as a type
 // parameter that does not support a specific operation need by the generic function/type.
+// If Go has generics without contracts (now constraints) then these are the sorts of things errors that
+// you'd get (as in C++ before C++20 added concepts).
 func TestNoContract(t *testing.T) {
 	a := struct {
 		int

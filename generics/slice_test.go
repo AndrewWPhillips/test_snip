@@ -42,10 +42,10 @@ func TestSliceInsert(t *testing.T) {
 
 func TestSliceInsert2(t *testing.T) {
 	const c = "C"
-	var s string = "B"
+	//var s string = "B"
 	n := []interface{}{"Z"}
 	n = slices.Insert(n, 0, "A") // OK
 	n = slices.Insert(n, 0, c)   // OK
-	n = slices.Inset(n, 0, s)    // []any does not implement ~[]string
+	//n = slices.Insert(n, 0, s)   // []any does not implement ~[]string
 	log.Println(n)
 }
