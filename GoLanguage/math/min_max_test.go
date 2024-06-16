@@ -1,10 +1,12 @@
+//go:build go1.21
+
 package __
 
 import (
 	"testing"
 )
 
-// requires Go 1.21
+// min requires Go 1.21
 
 func TestMinBuiltin(t *testing.T) {
 	v := []int{1, 2, 3}
