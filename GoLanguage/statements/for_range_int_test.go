@@ -7,7 +7,7 @@ import (
 )
 
 func TestForRangeInt(t *testing.T) {
-	for i := range 100 {
+	for i := range 10 {
 		println(i)
 	}
 }
