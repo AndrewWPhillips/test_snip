@@ -77,19 +77,22 @@ func BenchmarkSingleNoRangeFunc(b *testing.B) { // 460 ns/op
 	fmt.Println(saved)
 }
 
-var testSlice = []string{"first", "second", "last"}
+var testSlice = []string{
+	"first", "second", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+	"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "last",
+}
 
 func BenchmarkBackward1(b *testing.B) {
 	jj, ss := 0, ""
 	for i := 0; i < b.N; i++ {
-		for j, s := range Backward1(testSlice) {
+		for j, s := range Backward2(testSlice) {
 			jj, ss = j, s
 		}
 	}
 	fmt.Println(jj, ss)
 }
 
-func Backward1(s []string) func(func(int, string) bool) {
+func Backward1(s []string) func(func(int, string) bool) { // ~20ns
 	return func(yield func(int, string) bool) {
 		for i := len(s) - 1; i >= 0; i-- {
 			if !yield(i, s[i]) {
@@ -99,7 +102,7 @@ func Backward1(s []string) func(func(int, string) bool) {
 	}
 }
 
-func Backward2(s []string) func(func(int, string) bool) {
+func Backward2(s []string) func(func(int, string) bool) { // ~16ns
 	return func(yield func(int, string) bool) {
 		for i := len(s); i > 0; i-- {
 			if !yield(i-1, s[i-1]) {
