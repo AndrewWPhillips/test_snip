@@ -1,5 +1,8 @@
 package __
 
+// This was for testing "iterators" using channels (before Go 1.23 added built-in iterators and the iter package)
+// For benchmarks of iterating using range funcs see benchmarks/statements/for_range_func_test.go
+
 import (
 	"strconv"
 	"testing"

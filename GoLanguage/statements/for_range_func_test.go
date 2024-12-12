@@ -1,14 +1,22 @@
-//go:build go1.22
+//go:build go1.23
 
-// range func in for loops requires go 1.22 and GOEXPERIMENT=rangefunc
+// Tests of range funcs used in for-range statments
+// Originally these tests were for go 1.22 with GOEXPERIMENT=rangefunc
+// Go 1.23 added these calling them iterators with support in the iter package
+// See also
+//	benchmarks/iter/iter_test.go:1
+//	StandardLibrary/iter/seq0_test.go:1
 
 package __
 
 import (
 	"fmt"
-	"strconv"
+	"iter"
+	"math"
 	"testing"
 )
+
+////////////// RANGE FUNCS ///////////////
 
 // NoRange is a range func yielding no values ---------------
 func NoRange() func(func() bool) {
@@ -20,6 +28,93 @@ func NoRange() func(func() bool) {
 		}
 	}
 }
+
+// OneRange is a range func yielding one value (int) ------------
+func OneRange() iter.Seq[int] {
+	//func OneRange() func(func(int) bool) {
+	return func(yield func(int) bool) {
+		for i := 0; i < 10; i++ {
+			if !yield(i) {
+				return
+			}
+		}
+	}
+}
+
+// TwoRange yields a sequence of two ints
+// Parameters
+//
+//	m = length of the range
+//	show = print info about control flow in the range func
+//
+// func TwoRange(m int, show bool) func(func(int, float64) bool) {
+func TwoRange(m int, show bool) iter.Seq2[int, float64] {
+	return func(yield func(int, float64) bool) {
+		if show {
+			println("yield start")
+		}
+		for i := 0; i < m; i++ {
+			if show {
+				println("yield", i)
+			}
+			if !yield(i, math.Sqrt(float64(i))) {
+				if show {
+					println("yield break")
+				}
+				return
+			}
+		}
+		if show {
+			println("yield end")
+		}
+	}
+}
+
+// ThreeRange yields a sequence of three ints
+// but if you try to use it with a for-range statement you get ERROR: yield func has too many parameters
+func ThreeRange() func(func(int, int, int) bool) {
+	return func(yield func(i, j, k int) bool) {
+		for i := 0; i < 10; i++ {
+			if !yield(i, i*2, i*i) {
+				return
+			}
+		}
+	}
+}
+
+// NoBreakRange is a range func that breaks the rules - should return when yield() returns false
+func NoBreakRange(m int) func(func(int, int) bool) {
+	return func(yield func(int, int) bool) {
+		for i := 0; i < m; i++ {
+			yield(i, i) // should return on false
+			// The break in the loop gives: panic: runtime error: range function continued iteration after exit [recovered]
+		}
+	}
+}
+
+// BackwardStr is a range func yielding two values (int, string): the index and value from a slice in reverse order
+func BackwardStr(s []string) func(func(int, string) bool) {
+	return func(yield func(int, string) bool) {
+		for i := len(s); i > 0; i-- {
+			if !yield(i-1, s[i-1]) {
+				return
+			}
+		}
+	}
+}
+
+// Backward is a generic range func yielding two values (int, T): the index and value from a slice in reverse order
+func Backward[T any](s []T) func(func(int, T) bool) {
+	return func(yield func(int, T) bool) {
+		for i := len(s); i > 0; i-- {
+			if !yield(i-1, s[i-1]) {
+				return
+			}
+		}
+	}
+}
+
+/////////////// TESTS ///////////////
 
 func TestSimpleNoRangeFunc(t *testing.T) {
 	for range NoRange() {
@@ -51,110 +146,71 @@ func TestNoRangeFuncReturn(t *testing.T) {
 	fmt.Println("end")
 }
 
-// OneRange is a  range func yielding one value (int) ------------
-func OneRange() func(func(int) bool) {
-	return func(yield func(int) bool) {
-		for i := 0; i < 10; i++ {
-			if !yield(i) {
-				return
-			}
-		}
+// TestOneRangeFunc0 ranges over OneRange but without any iteration variable
+// this works inGo 1.23 but gopls (and maybe Go 1.22) gives ERROR: requires exactly one iteration variable
+func TestOneRangeFunc0(t *testing.T) {
+	for range OneRange() {
+		println(0)
 	}
 }
 
-func TestOneRangeFunc(t *testing.T) {
+func TestOneA(t *testing.T) {
 	for i := range OneRange() {
 		println(i)
 	}
 }
 
-func TwoRange() func(func(int, int) bool) {
-	return func(yield func(i, j int) bool) {
-		for i := 0; i < 10; i++ {
-			if !yield(i, i*i) {
-				return
-			}
+func TestOneANoForRange(t *testing.T) {
+	it := OneRange()
+	it(func(i int) bool {
+		println(i)
+		return true
+	})
+}
+
+func TestOneB(t *testing.T) {
+	for i := range OneRange() {
+		if i == 3 {
+			continue
+		}
+		println(i)
+		if i > 6 {
+			goto endLoop // or break or return
 		}
 	}
+endLoop:
+}
+
+func TestOneBNoForRange(t *testing.T) {
+	it := OneRange()
+	it(func(i int) bool {
+		if i == 3 {
+			return true // do nothing further but continue looping
+		}
+		println(i)
+		if i > 6 {
+			return false // stop looping
+		}
+		return true
+	})
 }
 
 func TestTwoRangeFunc(t *testing.T) {
-	for i, j := range TwoRange() {
-		println(i, j)
+	// for i := range TwoRange(5, false) { // OK but gopls gives ERROR: must have two iteration variables
+	for i, j := range TwoRange(5, false) {
+		fmt.Printf("i: %d %T, j: %v, %T\n", i, i, j, j)
 	}
 }
 
-/*
-func TestTwoRangeOneFunc(t *testing.T) {
-	for i := range TwoRange() { // range over TwoRange() (value of type func(func(int, int) bool)) must have two iteration variables
-		println(i)
-	}
-}
-*/
-
-func StringRange() func(func(string) bool) {
-	return func(yield func(s string) bool) {
-		for i := 0; i < 10; i++ {
-			if !yield(strconv.Itoa(i)) {
-				return
-			}
+func TestTwoRangeShow(t *testing.T) {
+	println("start")
+	for i, j := range TwoRange(3, true) {
+		fmt.Println(i, j)
+		if i > 1 {
+			break
 		}
 	}
-}
-
-func TestStringRangeFunc(t *testing.T) {
-	for s := range StringRange() {
-		fmt.Printf("%q %T\n", s, s)
-	}
-}
-
-/*
-func ThreeRange() func(func(int, int, int) bool) {
-	return func(yield func(i, j, k int) bool) {
-		for i := 0; i < 10; i++ {
-			if !yield(i, i*2, i*i) {
-				return
-			}
-		}
-	}
-}
-
-func TestThreeRangeFunc(t *testing.T) {
-	for i, j, k := range ThreeRange() { // expected at most 2 expressions
-		println(i, j, k)
-	}
-}
-*/
-
-// IntRange is a  range func yielding two values (int, int) ------------
-func IntRange(m int) func(func(int, int) bool) {
-	return func(yield func(int, int) bool) {
-		println("yield start")
-		for i := 0; i < m; i++ {
-			println("yield", i)
-			if !yield(i, i) {
-				println("yield break")
-				return
-			}
-		}
-		println("yield end")
-	}
-}
-
-func TestRangeFunc(t *testing.T) {
-	for i, x := range IntRange(15) {
-		fmt.Printf("i: %d %T, x: %d, %T\n", i, i, x, x)
-	}
-}
-
-// NoBreakRange is a range func that breaks the rules - should return when yield() returns false
-func NoBreakRange(m int) func(func(int, int) bool) {
-	return func(yield func(int, int) bool) {
-		for i := 0; i < m; i++ {
-			yield(i, i) // should return on false
-			// The break in the loop gives: panic: runtime error: range function continued iteration after exit [recovered]
-		}
-	}
+	println("end")
 }
 
 func TestNoBreakRangeFunc(t *testing.T) {
@@ -166,19 +222,11 @@ func TestNoBreakRangeFunc(t *testing.T) {
 	}
 }
 
-// Backward is a  range func yielding two values (int, string): the index and value from a slice in reverse order
-func Backward(s []string) func(func(int, string) bool) {
-	return func(yield func(int, string) bool) {
-		for i := len(s); i > 0; i-- {
-			if !yield(i-1, s[i-1]) {
-				return
-			}
-		}
-	}
-}
-
 func TestBackwardRangeFunc(t *testing.T) {
-	s := []string{"hello", "world"}
+	s := []string{"hello", "there", "world"}
+	for i, x := range BackwardStr(s) {
+		fmt.Println(i, x)
+	}
 	for i, x := range Backward(s) {
 		fmt.Println(i, x)
 	}
