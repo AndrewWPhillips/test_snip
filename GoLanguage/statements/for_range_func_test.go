@@ -147,9 +147,8 @@ func TestNoRangeFuncReturn(t *testing.T) {
 }
 
 // TestOneRangeFunc0 ranges over OneRange but without any iteration variable
-// this works inGo 1.23 but gopls (and maybe Go 1.22) gives ERROR: requires exactly one iteration variable
 func TestOneRangeFunc0(t *testing.T) {
-	for range OneRange() {
+	for range OneRange() { // OK Go 1.23 but gopls (1.22?) gives ERROR: requires exactly one iteration variable
 		println(0)
 	}
 }
