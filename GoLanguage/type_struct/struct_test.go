@@ -51,3 +51,12 @@ func TestAnonStruct2(t *testing.T) {
 	fmt.Println(m)
 	fff(m) // map[{1 a}:3.14]
 }
+
+func TestFields(t *testing.T) {
+	var a struct {
+		Ignore   bool
+		Args     []string
+		HasError bool
+	}
+	println(unsafe.Sizeof(a))
+}

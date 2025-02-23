@@ -14,6 +14,7 @@ import (
 	"iter"
 	"math"
 	"testing"
+	"time"
 )
 
 ////////////// RANGE FUNCS ///////////////
@@ -104,7 +105,8 @@ func BackwardStr(s []string) func(func(int, string) bool) {
 }
 
 // Backward is a generic range func yielding two values (int, T): the index and value from a slice in reverse order
-func Backward[T any](s []T) func(func(int, T) bool) {
+// func Backward[T any](s []T) func(func(int, T) bool) {
+func Backward[T any](s []T) iter.Seq2[int, T] {
 	return func(yield func(int, T) bool) {
 		for i := len(s); i > 0; i-- {
 			if !yield(i-1, s[i-1]) {
@@ -112,6 +114,15 @@ func Backward[T any](s []T) func(func(int, T) bool) {
 			}
 		}
 	}
+}
+
+func blogIterator(yieldFunc func(int, float64) bool) {
+	for i := 0; i < 7; i++ {
+		if !yieldFunc(i, math.Sqrt(float64(i))) {
+			return
+		}
+	}
+	return
 }
 
 /////////////// TESTS ///////////////
@@ -229,4 +240,17 @@ func TestBackwardRangeFunc(t *testing.T) {
 	for i, x := range Backward(s) {
 		fmt.Println(i, x)
 	}
+}
+
+func TestBlog(t *testing.T) {
+	for v, root := range blogIterator {
+		if root == 0.0 {
+			continue
+		}
+		if root >= 2.0 {
+			break
+		}
+		println(v, root)
+	}
+	time.NewTicker()
 }
