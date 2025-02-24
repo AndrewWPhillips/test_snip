@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sort"
 	"strconv"
 	"testing"
 )
@@ -26,12 +27,12 @@ func TestQuiz1(t *testing.T) {
 }
 
 func TestQuiz2(t *testing.T) {
-	i, s := 1, "100"
+	i, s := 13, "13"
 	if len(s) > 1 {
 		i, _ := strconv.Atoi(s)
 		i++
 	}
-	fmt.Println(i) // 1
+	fmt.Println(i) // 13
 }
 
 func ten(num ...int) {
@@ -39,7 +40,7 @@ func ten(num ...int) {
 }
 
 func TestQuiz3(t *testing.T) {
-	i := []int{5, 6, 7}
+	i := []int{7, 8, 9}
 	ten(i...)
 	fmt.Println(i[0]) // 10
 }
@@ -49,8 +50,9 @@ func hello3(i int) {
 }
 
 func TestQuiz11(t *testing.T) {
-	i := 5
-	defer hello3(i) // 5 - args evaluated here
+	sort.Search()
+	i := 13
+	defer hello3(i) // 13 - args evaluated here
 	i = i + 10
 }
 

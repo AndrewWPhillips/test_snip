@@ -61,3 +61,9 @@ func TestCapture2(t *testing.T) {
 	f := fff()
 	f()
 }
+
+func TestLoopCapture(t *testing.T) {
+	for i := 0; i < 5; i++ {
+		go func() { println(i) }()
+	}
+}
