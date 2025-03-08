@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test" singleton="false">
+    <module name="test_snip" />
+    <working_directory value="$PROJECT_DIR$" />
+    <parameters value="-test.count=1  -test.benchmem -test.benchtime=2s" />
+    <kind value="DIRECTORY" />
+    <package value="github.com/andrewwphillips/test_snip" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <framework value="gotest" />
+    <method v="2" />
+  </configuration>
+</component>
