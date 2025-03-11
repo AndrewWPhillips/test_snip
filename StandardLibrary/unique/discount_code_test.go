@@ -60,6 +60,7 @@ func BenchmarkVoucher3(b *testing.B) { // 17 to 70 ns/op
 	}
 }
 
+// BenchmarkVoucher4 checks speed of using unique (3 times faster)
 func BenchmarkVoucher4(b *testing.B) { // 5 to 25 ns/op
 	products := GenerateProducts4(1000, 10)
 

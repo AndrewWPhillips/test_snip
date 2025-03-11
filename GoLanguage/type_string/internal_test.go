@@ -7,21 +7,34 @@ import (
 	"unsafe"
 )
 
-// TestStringData uses unsafe.StringData to get a pointer to the underlying bytes of a string
+var sGlobal = "abc"
+
+// TestStringData works out where in memory strings are stored by using
+// unsafe.StringData to get a pointer to the underlying bytes of a string
 func TestStringData(t *testing.T) {
-	a := "abc"
+	const sConst = "abc"
+	sLoc1 := "abc"
+	sLoc2 := "ab"
+	sSub1 := sLoc1[:]
+	sSub2 := sLoc1[:2]   // ab
+	sSub3 := sLoc1[1:2]  // b
+	sSub4 := "abcde"[:3] // abc
+	sCalc1 := sLoc1 + "x"
+	sCalc2 := sSub2 + "c" // abc
+	sBuilt1 := strings.Builder{}
+	sBuilt1.WriteString("abc")
 
-	sb := strings.Builder{}
-	sb.WriteString("abc")
-	b := sb.String()
-
-	c := "abcd"[:3]
-
-	ab := "ab"
-	d := ab + "c"
-
-	// 0x9...F0B, same, 0xC...4C0, 0x9...8, 0xC...4C8
-	fmt.Printf("%p %p, %p, %p, %p\n", unsafe.StringData("abc"),
-		unsafe.StringData(a), unsafe.StringData(b),
-		unsafe.StringData(c), unsafe.StringData(d))
+	println(unsafe.StringData("abc"), // Static A (0xff2f0b)
+		unsafe.StringData(sGlobal),          // Static A
+		unsafe.StringData(sConst),           // Static A
+		unsafe.StringData(sLoc1),            // Static A
+		unsafe.StringData(sLoc2),            // Static B (0xff2e48)
+		unsafe.StringData(sSub1),            // Static A
+		unsafe.StringData(sSub2),            // Static A
+		unsafe.StringData(sSub3),            // Static A+1 (0xff2f0c)
+		unsafe.StringData(sSub4),            // Static C (0xff3256)
+		unsafe.StringData(sCalc1),           // Stack M
+		unsafe.StringData(sCalc2),           // Stack N
+		unsafe.StringData(sBuilt1.String()), // Stack P
+	)
 }
