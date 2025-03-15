@@ -79,3 +79,10 @@ func TestJaggedArray(t *testing.T) {
 		log.Println("--")
 	}
 }
+
+// TestPointerToArray shows that you can index on a pointer to array
+func TestPointerToArray(t *testing.T) {
+	intArray := [2]int{1, 2}
+	arrayPointer := &intArray
+	log.Println(intArray[1], arrayPointer[1], (*arrayPointer)[1])
+}
