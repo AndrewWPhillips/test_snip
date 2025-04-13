@@ -26,3 +26,10 @@ func TestFuncArraySlice(t *testing.T) {
 	b := a                    // copy the array
 	p(a[:], b[:])             // false: slices with different underlying arrays
 }
+
+func TestNilVsEmpty(t *testing.T) {
+	var s1 []int
+	s2 := []int{}
+	println(len(s1), len(s2))
+	println(reflect.DeepEqual(s1, s2))
+}

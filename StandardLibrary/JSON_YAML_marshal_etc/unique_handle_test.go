@@ -9,7 +9,6 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"log"
-	"runtime"
 	"testing"
 	"unique"
 )
@@ -33,7 +32,6 @@ func TestUniqueJSON(t *testing.T) {
 		log.Fatalln("json.Marshall error:", err)
 	}
 	log.Printf("got JSON %q\n", got)
-	runtime.SetFinalizer()
 
 	var result uniq
 	json.Unmarshal(got, &result)

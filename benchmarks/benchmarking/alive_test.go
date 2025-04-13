@@ -5,11 +5,6 @@ import (
 	"testing"
 )
 
-func BenchmarkNothing(b *testing.B) { // 0.3 ns/op
-	for i := 0; i < b.N; i++ {
-	}
-}
-
 func BenchmarkAlmostNothing(b *testing.B) { // 0.3 ns/op
 	const s = "abc"
 	for i := 0; i < b.N; i++ {
@@ -68,35 +63,35 @@ func BenchmarkKeptAlive(b *testing.B) { // 49 ns/op
 
 var i42 = 42
 
-func f() string { return strconv.Itoa(i42) }
+func f42() string { return strconv.Itoa(i42) }
 
 //go:noinline
-func g() string { return strconv.Itoa(i42) }
+func g42() string { return strconv.Itoa(i42) }
 
 func BenchmarkNotAliveInline(b *testing.B) { // 3
 	for i := 0; i < b.N; i++ {
-		_ = f()
+		_ = f42()
 	}
 }
 
 func BenchmarkAliveInline2(b *testing.B) { // 3
 	var s string
 	for i := 0; i < b.N; i++ {
-		s = f()
+		s = f42()
 	}
 	println(s)
 }
 
 func BenchmarkNotAliveNotInline(b *testing.B) { // 4
 	for i := 0; i < b.N; i++ {
-		_ = g()
+		_ = g42()
 	}
 }
 
 func BenchmarkAliveNotInline2(b *testing.B) { // 4
 	var s string
 	for i := 0; i < b.N; i++ {
-		s = g()
+		s = g42()
 	}
 	println(s)
 }

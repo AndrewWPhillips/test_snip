@@ -10,9 +10,17 @@ func inc(pi *int) {
 }
 
 // BenchmarkIncInline test how a benchmark performs on an inlined file (about 1.5 ns/op on work computer)
-func BenchmarkIncInline(b *testing.B) {
+func BenchmarkIncInline(b *testing.B) { // 1.9
 	j := 0
 	for i := 0; i < b.N; i++ {
+		inc(&j)
+	}
+	log.Println(j)
+}
+
+func BenchmarkIncInlineNew(b *testing.B) { // 2.2 ns
+	j := 0
+	for b.Loop() {
 		inc(&j)
 	}
 	log.Println(j)
@@ -24,9 +32,17 @@ func incNoinline(pi *int) {
 }
 
 // BenchmarkIncNoInline does the same as BenchmarkIncInline but with a non-inlined func (1.7 ns/op)
-func BenchmarkIncNoInline(b *testing.B) {
+func BenchmarkIncNoInline(b *testing.B) { // 2.2
 	j := 0
 	for i := 0; i < b.N; i++ {
+		incNoinline(&j)
+	}
+	log.Println(j)
+}
+
+func BenchmarkIncNoInlineNew(b *testing.B) { // 2.2
+	j := 0
+	for b.Loop() {
 		incNoinline(&j)
 	}
 	log.Println(j)
