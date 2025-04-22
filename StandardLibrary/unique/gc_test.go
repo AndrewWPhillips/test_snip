@@ -12,7 +12,7 @@ import (
 // a substring of a larger string does not prevent the larger string from being GCed
 func TestUniqueHoldSubString(t *testing.T) {
 	a := "abcdefhijk"
-	unique.Make(a[1:2])
+	h := unique.Make(a[1:2])
 
 	runtime.AddCleanup(&a, func(i int) { println("GC of a") }, 0)
 	a = "" // ensure the original string is no longer referenced
@@ -20,6 +20,7 @@ func TestUniqueHoldSubString(t *testing.T) {
 	runtime.GC()
 	time.Sleep(time.Microsecond) // allow for GC to finish
 	println("after GC")
+	runtime.KeepAlive(h)
 }
 
 // TestUniqueHoldStringField is like TestUniqueHoldSubString but checks that a substring as
@@ -39,12 +40,11 @@ func TestUniqueHoldStringField(t *testing.T) {
 // TestUniqueHoldArrayElement shows that passing a pointer into an array to unique prevents the array being GC'd
 func TestUniqueHoldArrayElement(t *testing.T) {
 	a := new([8192]int)
-	unique.Make(&a[42])
+	//unique.Make(&a[42])
 
 	runtime.AddCleanup(a, func(i int) { println("GC of a") }, 0)
 
 	a = nil // ensure a is no longer referenced
-	println("before GC")
 	runtime.GC()
 	time.Sleep(time.Second) // wait for GC to finish
 	println("after GC")

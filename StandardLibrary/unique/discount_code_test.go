@@ -43,6 +43,33 @@ type (
 	}
 )
 
+func hasDiscount(c customer3, p product3) bool {
+	for _, v := range c.Vouchers {
+		if _, found := p.Discount[v]; found {
+			return true
+		}
+	}
+	return false
+}
+
+func TestCheckDiscount(t *testing.T) {
+	p := product3{
+		ID:    1,
+		Price: 2,
+		Discount: map[string]struct{}{
+			"discountvoucher":  struct{}{},
+			"discountvoucher2": struct{}{},
+		},
+	}
+
+	c := customer3{
+		Name:     "Andrew",
+		Vouchers: []string{"discountvoucher3"},
+	}
+
+	println(hasDiscount(c, p))
+}
+
 // ---  BENCHMARKS ---
 
 func BenchmarkVoucher3(b *testing.B) { // 17 to 70 ns/op
