@@ -3,7 +3,10 @@
 package __
 
 import (
+	"context"
 	"fmt"
+	"os"
+	"os/signal"
 	"testing"
 	"testing/synctest" // requires GOEXPERIMENT=synctest
 	"time"
@@ -48,4 +51,53 @@ func TestSyncExternal(t *testing.T) {
 		}
 	})
 	fmt.Println("took:", time.Now().Sub(start))
+}
+
+func TestSyncInsideSync(t *testing.T) {
+	println("Outside")
+	synctest.Run(func() {
+		println("Middle")
+		synctest.Run(func() { // panic: synctest.Run called from within a synctest bubble
+			println("Inside")
+		})
+	})
+}
+
+func TestTimeSleep(t *testing.T) {
+	//synctest.Run(func() {
+	before := time.Now()
+	time.Sleep(time.Second)
+	after := time.Now()
+	if d := after.Sub(before); d != time.Second {
+		t.Fatalf("took %v", d)
+	}
+	//})
+}
+
+func TestSynctestMono(t *testing.T) {
+	synctest.Run(func() {
+		before := time.Now()
+		time.Sleep(5e18)
+		after := time.Now()
+
+		fmt.Println(before)
+		fmt.Println(after)
+		fmt.Println(before.Round(0))
+		fmt.Println(after.Round(0))
+	})
+}
+
+// TestSyncTestNotifyProblem tries (and fails) to reproduce problems seen in main/synctest_notify.go
+func TestSyncTestNotifyProblem(t *testing.T) {
+	_, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer cancel()
+
+	synctest.Run(func() {
+		start := time.Now()
+		fmt.Println("Running starting at", start)
+		time.Sleep(20 * time.Second)
+		now := time.Now()
+		duration := now.Sub(start)
+		fmt.Println("duration: ", duration)
+	})
 }

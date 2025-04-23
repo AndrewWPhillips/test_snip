@@ -1,5 +1,7 @@
 package main
 
+// use synctest to "sleep" until a certain time after 2000
+
 import (
 	"context"
 	"flag"
