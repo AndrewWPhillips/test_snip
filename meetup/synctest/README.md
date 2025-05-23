@@ -1,4 +1,6 @@
-# 
+# SyncTest
+
+Has synctest code for April 2025 Go Meetup
 
 See also:
 

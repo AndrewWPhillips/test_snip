@@ -19,3 +19,6 @@ $ go tool pprof cpu.pprof
 # View profile Web
 $ go tool pprof -http : cpu.pprof
 
+# Run synctest problem examples (synctest_notify.go etc)
+$ cd main
+$ GOEXPERIMENT=synctest go run synctest_notify.go

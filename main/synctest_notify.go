@@ -1,3 +1,5 @@
+//go:build go1.24 && goexperiment.synctest
+
 package main
 
 import (
