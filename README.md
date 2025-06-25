@@ -1,4 +1,4 @@
-This project just contains tests, code snippets, etc. all written as Go tests.
+This project just contains tests, code snippets, etc. all written as Go tests (except files in the main and private directories).
 
 # Table-Driven Tests
 
@@ -6,7 +6,7 @@ In the future I will set up more map-based, table-driven tests. For example, see
 
 # IDE Support For Running Tests
 
-If you have an IDE like GoLand it is easy to run a single test from a table. In GoLand you to click on the green arrow in the gutter next to a row of the table of tests to run a single test.  Moreover, table-driven tests make it simple to add a new test, or a variation of an existing test, without adding or modifying any code and immediately try it.
+If you have an IDE that supports it (like GoLand), it is easy to run a single test from a table. In GoLand you to click on the green arrow in the gutter next to a row of the table of tests to run a single test.  Moreover, table-driven tests make it simple to add a new test, or a variation of an existing test, without adding or modifying any code, then immediately try it.
 
 Note that they have been set up carefully. E.g., you must use a struct for the data of each test and .  See https://www.jetbrains.com/go/guide/tips/run-test-in-table-test/?playlist=new-features-in-goland-2020-3).
 
