@@ -2,6 +2,8 @@
 
 package __
 
+// see also OpenSourcePackages/rate_limiter_test.go:13
+
 import (
 	"context"
 	"fmt"
@@ -12,6 +14,9 @@ import (
 	"time"
 )
 
+// TestSyncTest just tests 2 goroutines and sleep
+// synctest.Run() does not return until the 10 second goroutine exists
+// The test runs in a few ms since time.Sleep() calls use the "fake" time.
 func TestSyncTest(t *testing.T) {
 	start := time.Now()
 	synctest.Run(func() {
@@ -26,6 +31,8 @@ func TestSyncTest(t *testing.T) {
 	fmt.Println("took:", time.Now().Sub(start))
 }
 
+// TestSyncExternal tests interacting with goroutines running outside
+// This test takes about 5 secs to run due to time.Sleep() calls using real time.
 func TestSyncExternal(t *testing.T) {
 	start := time.Now()
 
