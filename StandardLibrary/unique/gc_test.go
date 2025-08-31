@@ -10,6 +10,7 @@ import (
 
 // TestUniqueHoldSubString checks that unique.Make() makes a copy of a string so that intern of
 // a substring of a larger string does not prevent the larger string from being GCed
+// See also gc_string_test.go
 func TestUniqueHoldSubString(t *testing.T) {
 	a := "abcdefhijk"
 	h := unique.Make(a[1:2])
