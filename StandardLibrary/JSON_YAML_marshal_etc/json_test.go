@@ -13,6 +13,16 @@ import (
 	"github.com/dolmen-go/jsonmap"
 )
 
+const wedString = `{
+	"Name": "Wednesday",
+	"Age": 6,
+	"Parents": [
+		"Gomez",
+		"Morticia",
+		null
+	]
+}`
+
 // TestUnmarshal tests decoding various JSON string into any type (interface{})
 func TestUnmarshal(t *testing.T) {
 	testData := map[string]struct {
@@ -25,7 +35,7 @@ func TestUnmarshal(t *testing.T) {
 		"empty_obj":  {"{}"},   // type = map[string]interface{}
 		"empty_list": {"[]"},   // type = []interface{}
 		"full_list":  {`[{"Response": "1b"}, {"Response": "i", "Data": {"Contest": "203244481","BetType": 0 }}]`},
-		"map":        {`{"Name": "Wednesday", "Age": 6, "Parents": ["Gomez", "Morticia", null]}`},
+		"map":        {wedString},
 		"test2":      {`{ "a": [1, true] }`},
 		"test4":      {`{ "a": ["A", [2,3,4], null ] }`},
 		"numberList": {"[-1, 42, 7]"},

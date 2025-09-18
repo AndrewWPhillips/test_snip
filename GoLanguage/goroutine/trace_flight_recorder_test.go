@@ -53,9 +53,9 @@ func TestTraceFlightRecorder(t *testing.T) {
 	if err != nil {
 		t.Fatal("Could not create trace file:", err.Error())
 	}
-	defer file.Close()
 	_, err = ptfr.WriteTo(file)
 	if err != nil {
 		t.Fatal("Could not write trace file:", err.Error())
 	}
+	file.Close()
 }

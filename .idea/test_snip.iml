@@ -3,7 +3,6 @@
   <component name="Go" enabled="true">
     <buildTags>
       <option name="compiler" value="gc" />
-      <option name="goVersion" value="1.24" />
       <option name="experiments">
         <array>
           <option value="synctest" />
