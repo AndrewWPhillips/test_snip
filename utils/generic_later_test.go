@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// These are tests of functions which can be made generic in Go 1.19
+// These are tests of functions which can be made generic when we have a Go 1.18 RC
 
 // Min return the minimum of 1 or more ints - with generics extend to any comparable type (byte, float64, string)
 func Min(first int, rest ...int) (retval int) {
@@ -32,6 +32,7 @@ func Stringify(s []time.Time) (retval []string) {
 	return
 }
 
+// This uses old go2go generics with contracts
 //type Stringer struct {}
 //func (s Stringer) String() string { return "" }
 //
@@ -40,6 +41,15 @@ func Stringify(s []time.Time) (retval []string) {
 //		ret = append(ret, v.String())
 //	}
 //	return ret
+//}
+
+// This uses final generics proposal (with constraints and square brackets)
+//func Stringify[T interface{ String() string }](s []T) []string {
+//	r := make([]string, len(s))
+//	for _, v := range s {
+//		r = append(r, v.String())
+//	}
+//	return r
 //}
 
 func TestStringify(t *testing.T) {

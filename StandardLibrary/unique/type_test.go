@@ -11,7 +11,7 @@ func TestSameUnderlyingTypes(t *testing.T) {
 
 	h1 := unique.Make("abc")
 	h2 := unique.Make(Str("abc"))
-	fmt.Println(h1, h2)
+	fmt.Println(h1, h2) // different pointers
 }
 
 func TestUniqueInterface(t *testing.T) {

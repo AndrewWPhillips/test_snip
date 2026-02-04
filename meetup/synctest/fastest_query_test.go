@@ -1,3 +1,5 @@
+//go:build go1.24 && goexperiment.synctest
+
 package __test
 
 import (
@@ -33,5 +35,14 @@ func TestFastest(t *testing.T) {
 			t.FailNow()
 		}
 		fmt.Printf("took %v\n", elapsed)
+	})
+}
+
+func TestAnotherDeadlock(t *testing.T) {
+	synctest.Run(func() {
+		ch := make(chan struct{})
+		go func() {
+			<-ch
+		}()
 	})
 }

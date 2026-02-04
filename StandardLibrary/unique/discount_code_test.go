@@ -72,6 +72,7 @@ func TestCheckDiscount(t *testing.T) {
 
 // ---  BENCHMARKS ---
 
+// BenchmarkVoucher3 checks speed of using a map
 func BenchmarkVoucher3(b *testing.B) { // 17 to 70 ns/op
 	products := GenerateProducts3(1000, 10)
 

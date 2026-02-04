@@ -5,6 +5,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"golang.org/x/sync/errgroup"
 )
 
 func TestWaitGroup(t *testing.T) {
@@ -33,6 +35,13 @@ func TestWGAddWrong(t *testing.T) {
 
 	wg.Wait()
 	log.Println("world")
+}
+
+func TestErrGroup(t *testing.T) {
+	var eg errgroup.Group
+	eg.Go(func() error {
+
+	})
 }
 
 func TestWGNegative(t *testing.T) {
