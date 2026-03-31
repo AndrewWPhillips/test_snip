@@ -1,78 +1,78 @@
 package __test
 
 import (
+	"math/rand/v2"
 	"simd/archsimd"
+	"slices"
 	"testing"
+	"unsafe"
 )
 
-func Add(a, b []float32) []float32 {
-	if len(a) != len(b) {
-		panic("slices of different length")
-	}
-	res := make([]float32, len(a))
-	for i := range a {
-		res[i] = a[i] + b[i]
-	}
-	return res
+// TestSimdAbs just tests the AVX (SIMD) instruction that generates absolute values of 32 bytes
+func TestSimdAbs(t *testing.T) {
+	a := slices.Repeat([]int8{0, 1, -1, 9, -9, 127, -127, -128}, 8)
+	aVec32 := archsimd.LoadInt8x32Slice(a)
+	clear(a) // verify that changing the array doesn't change underlying values of aVec32
+
+	result := aVec32.Abs()
+	println(aVec32.String())
+	println(result.String())
 }
 
-func SimdAdd(a, b []float32) []float32 {
-	if len(a) != len(b) {
-		panic("slices of different length")
+// RandInt8Vector generates a slice of 64 random signed bytes
+// If the parameter (halfRange) is zero then we use the full range (-127 to 127 inclusive) but without -128
+func RandInt8Vector(halfRange int) []int8 {
+	if halfRange <= 0 || halfRange > 127 {
+		halfRange = 127
 	}
+	topRange := 2*halfRange + 1 // 255 for halfRange 127
 
-	// If AVX-512 isn't supported, fall back to scalar addition,
-	// since the Float32x16.Add method needs the AVX-512 instruction set.
-	if !archsimd.X86.AVX512() {
-		return Add(a, b)
+	const MAX_VEC = 64
+	r := make([]int8, 0, MAX_VEC)
+	for range MAX_VEC {
+		r = append(r, int8(rand.IntN(topRange)-halfRange))
 	}
-
-	res := make([]float32, len(a))
-	n := len(a)
-	i := 0
-
-	// 1. SIMD loop: Process 16 elements at a time.
-	for i <= n-16 {
-		// Load 16 elements from a and b vectors.
-		va := archsimd.LoadFloat32x16Slice(a[i : i+16])
-		vb := archsimd.LoadFloat32x16Slice(b[i : i+16])
-
-		// Add all 16 elements in a single instruction
-		// and store the results in the result vector.
-		vSum := va.Add(vb) // translates to VADDPS asm instruction
-		vSum.StoreSlice(res[i : i+16])
-
-		i += 16
-	}
-
-	// 2. Scalar tail: Process any remaining elements (0-15).
-	for ; i < n; i++ {
-		res[i] = a[i] + b[i]
-	}
-
-	return res
+	return r
 }
 
-var (
-	a1 = []float32{
-		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-		17, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-		17,
-	}
-	a2 = []float32{
-		17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2,
-		1, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
-	}
-)
+// RandVector8x16 creates an int8 vector fill with random byte values
+// The parameter halfRange determines the +/- range of values, but if
+// zero, negative or more than 127 then the range -127 to 127 is used.
+func RandVector8x16(halfRange int) archsimd.Int8x16 {
+	return archsimd.LoadInt8x16Slice(RandInt8Vector(halfRange))
+}
 
-func BenchmarkSimdAdd(b *testing.B) {
-	for b.Loop() {
-		SimdAdd(a1, a2)
+func RandVector8x32(halfRange int) archsimd.Int8x32 {
+	return archsimd.LoadInt8x32Slice(RandInt8Vector(halfRange))
+}
+
+func RandVector8x64(halfRange int) archsimd.Int8x64 {
+	return archsimd.LoadInt8x64Slice(RandInt8Vector(halfRange))
+}
+
+func TestSimdLoad(t *testing.T) {
+	if !archsimd.X86.AVX() {
+		println("AVX not supported")
+		return
+	}
+
+	aVec16 := RandVector8x16(0)
+	println(aVec16.String())
+	println(aVec16.AsInt64x2().String())
+	aVec32 := RandVector8x32(0)
+	println(aVec32.String())
+	if archsimd.X86.AVX512() {
+		aVec64 := RandVector8x64(0)
+		println(aVec64.String())
 	}
 }
 
-func BenchmarkNormalAdd(b *testing.B) {
-	for b.Loop() {
-		Add(a1, a2)
+func TestSimdCast(t *testing.T) {
+	var p *archsimd.Int8x16
+	v := struct{ vals [16]int8 }{
+		[16]int8{1, 2, 3, 4, 5, 6, 7, 8, 9},
 	}
+	p = (*archsimd.Int8x16)(unsafe.Pointer(&v))
+
+	println(p.String())
 }

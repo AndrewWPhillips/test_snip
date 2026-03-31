@@ -12,7 +12,6 @@ import (
 
 func main() {
 	synctest.Run(func() {
-		//signal.NotifyContext(context.Background())
 		signal.Notify(make(chan os.Signal, 1))
 	})
 }

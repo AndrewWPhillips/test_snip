@@ -14,7 +14,6 @@ import (
 	"iter"
 	"math"
 	"testing"
-	"time"
 )
 
 ////////////// RANGE FUNCS ///////////////
@@ -252,5 +251,4 @@ func TestBlog(t *testing.T) {
 		}
 		println(v, root)
 	}
-	time.NewTicker()
 }

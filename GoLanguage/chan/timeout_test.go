@@ -24,7 +24,7 @@ func TestChanNoTimeout(t *testing.T) {
 	ch := make(chan int)
 	go SendChanTest(ch)
 
-	// loop reading from the channel till closed
+	// print values read from the channel till it's closed
 	for v := range ch {
 		fmt.Println(v)
 	}
@@ -65,4 +65,20 @@ func TestChanTimeoutClose(t *testing.T) {
 			fmt.Println("timeout")
 		}
 	}
+}
+
+func TestChanWriteTimeout(t *testing.T) {
+	ch := make(chan int) // unbuffered channel
+	go func() { fmt.Println(<-ch) }()
+
+	ch <- 5 // does not block (due to above goroutine)
+	select {
+	case ch <- 6: // blocks
+	case <-time.After(time.Millisecond * 2):
+		fmt.Println("timeout")
+	}
+	close(ch)
+
+	v, ok := <-ch
+	fmt.Println(v, ok) // 0 false (ie closed)
 }
