@@ -5,6 +5,7 @@
 package __
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -17,5 +18,11 @@ func TestForRangeInt0(t *testing.T) {
 func TestForRangeInt(t *testing.T) {
 	for i := range 10 {
 		println(i)
+	}
+}
+
+func TestForRangeUint(t *testing.T) {
+	for i := range uintptr(10) {
+		fmt.Printf("%T %v\n", i, i)
 	}
 }

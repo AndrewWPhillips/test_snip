@@ -21,7 +21,7 @@ func stub() error { return errors.New("TOE") }
 func TestQuizFunc(t *testing.T) {
 	result := stub
 	if result != nil {
-		log.Println(result)
+		//log.Println(result)
 		return
 	}
 	log.Println("OK")

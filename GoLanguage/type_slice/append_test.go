@@ -39,3 +39,26 @@ func TestExpand(t *testing.T) {
 	s = append(s, "three", "four")
 	log.Printf("%p len %d cap %d\n", &s[0], len(s), cap(s)) // len 5 cap 8 (s[0] has diff address)
 }
+
+func TestAppendNil(t *testing.T) {
+	var a, b []string
+	a = append(a, b...) // append nil slice to nil slice
+	println(a == nil, len(a))
+}
+// TestAppendNilCap tests cap after creating a new slice by appending to a new slice
+// Note that this behaviour is unspecified so may change at some point
+func TestAppendNilCap(t *testing.T) {
+	var a []int
+	a = append(a, 1)
+	println(cap(a)) // 1
+	a = append(a, 2)
+	println(cap(a)) // 2
+	a = append(a, 3)
+	println(cap(a)) // 4
+	a = append(a, 4)
+	println(cap(a)) // 4
+	a = append(a, 5)
+	println(cap(a)) // 8 - could be less in the future?? (cf C++ std::vector)
+	a = append(a, 6)
+	println(cap(a)) // 8
+}

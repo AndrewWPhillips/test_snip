@@ -14,8 +14,8 @@ func TestStringsSplitAfter(t *testing.T) {
 	fmt.Println(strings.SplitAfter("a,b,c", ",")[0])
 }
 
-func TestStringsSplitSeq(t *testing.T) {
-	for s := range strings.SplitSeq("a,b,c", ",") {
-		fmt.Println(s)
+func TestSplitSeq(t *testing.T) {
+	for _, s := range strings.Split("abc,;def,z", ",;") {
+		println(s)
 	}
 }

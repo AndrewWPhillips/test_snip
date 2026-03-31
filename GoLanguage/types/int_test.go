@@ -1,8 +1,11 @@
 package __
 
 import (
+	"fmt"
 	"log"
+	"runtime"
 	"testing"
+	"unsafe"
 )
 
 // TestNewInt looks at the address of an int on the heap
@@ -15,4 +18,9 @@ func TestNewInt(t *testing.T) {
 	log.Printf("%p %d\n", pi, *pi)
 	*pi = 3
 	log.Printf("%p %d\n", pi, *pi)
+}
+
+func TestIntSize(t *testing.T) {
+	fmt.Println("- GOARCH:", runtime.GOARCH)
+	fmt.Println("- int size:", unsafe.Sizeof(int(0)))
 }

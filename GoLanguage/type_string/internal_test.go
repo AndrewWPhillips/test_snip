@@ -24,18 +24,18 @@ func TestStringData(t *testing.T) {
 	sBuilt1 := strings.Builder{}
 	sBuilt1.WriteString("abc")
 
-	println(unsafe.StringData("abc"), // Static A (0xff2f0b)
+	println(unsafe.StringData("abc"), // Static A (0x7ff67f7c9b70)
 		unsafe.StringData(sGlobal),          // Static A
 		unsafe.StringData(sConst),           // Static A
 		unsafe.StringData(sLoc1),            // Static A
-		unsafe.StringData(sLoc2),            // Static B (0xff2e48)
+		unsafe.StringData(sLoc2),            // Static B (0x7ff67f7c9a9d)
 		unsafe.StringData(sLoc3),            // Static A
 		unsafe.StringData(sSub1),            // Static A
 		unsafe.StringData(sSub2),            // Static A
-		unsafe.StringData(sSub3),            // Static A+1 (0xff2f0c)
-		unsafe.StringData(sSub4),            // Static C (0xff3256)
-		unsafe.StringData(sCalc1),           // Stack M (0xc000051ef8)
+		unsafe.StringData(sSub3),            // Static A+1 (0x7ff67f7c9b71)
+		unsafe.StringData(sSub4),            // Static C (0x7ff67f7c9ecd)
+		unsafe.StringData(sCalc1),           // Stack M (0x174fc421f00)
 		unsafe.StringData(sCalc2),           // Stack N
-		unsafe.StringData(sBuilt1.String()), // Stack P
+		unsafe.StringData(sBuilt1.String()), // Heap P (0xc00000a430)
 	)
 }
