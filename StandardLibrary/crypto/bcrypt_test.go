@@ -11,8 +11,9 @@ func TestBCrypt(t *testing.T) {
 }
 
 func CheckPasswordNotCracked(hash []byte) bool {
-	for pwd := range CrackedPasswords {
-		if err := bcrypt.CompareHashAndPassword(hash, pwd); err == nil {
+	var CrackedPasswords = []string{"abc", "def"}
+	for _, pwd := range CrackedPasswords {
+		if err := bcrypt.CompareHashAndPassword(hash, []byte(pwd)); err == nil {
 			return true
 		}
 	}
