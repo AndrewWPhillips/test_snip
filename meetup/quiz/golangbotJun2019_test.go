@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"sort"
 	"strconv"
 	"testing"
 )
@@ -50,7 +49,6 @@ func hello3(i int) {
 }
 
 func TestQuiz11(t *testing.T) {
-	sort.Search()
 	i := 13
 	defer hello3(i) // 13 - args evaluated here
 	i = i + 10
