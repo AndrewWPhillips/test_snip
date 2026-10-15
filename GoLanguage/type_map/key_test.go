@@ -133,6 +133,17 @@ func TestSMFInterfaceKey(t *testing.T) {
 	_ = m
 }
 
+type I interface{ P() }
+type S struct{ m map[int]string }
+
+func (s S) P() {}
+
+func TestNoncomparableInterfaceKey(t *testing.T) {
+	var s S
+	m := map[I]int{I(s): 1} // panic: runtime error: hash of unhashable type S
+	_ = m
+}
+
 func TestModifyKey(t *testing.T) {
 	mm := map[string]int{"1,2": 1, "3": 3}
 	log.Println(mm) // map[1,2:1 3:3]

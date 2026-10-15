@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-// See also GoLanguage/math/literals_test.go
+// See also GoLanguage/math/literals_test.go and address_test.go
 
 func TestNestedStruct(t *testing.T) {
 	type axx struct{ int }
@@ -71,7 +71,7 @@ func TestMapLiteral(t *testing.T) {
 	log.Println(v)              // map[]
 }
 
-func TestLiteralInt(t *testing.T) {
+func TestIntLiteral(t *testing.T) {
 	type aa int
 	bb := aa(2)                   // aa "literal"
 	log.Printf("%T %v\n", bb, bb) // aa 2
@@ -80,6 +80,14 @@ func TestLiteralInt(t *testing.T) {
 	*cc = aa(3)
 	log.Println(cc, *cc) // 0xc042008f90 3
 }
-func TestLiteralInterface(t *testing.T) {
-	// TODO
+
+func TestInterfaceLiteral(t *testing.T) {
+	type it interface{}
+	bb := it(2)                   // interface "literal"
+	log.Printf("%T %v\n", bb, bb) // int 2 (Printf looks at the contents of the interface)
+	log.Printf("%T\n", &bb)       // *__.it
+	//cc := &it(3)                 // can't take address of interface literal
+	cc := new(it)
+	*cc = it(3)
+	log.Println(cc, *cc) // 0xc000026510 3
 }

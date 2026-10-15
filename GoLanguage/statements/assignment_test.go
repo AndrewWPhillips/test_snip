@@ -17,3 +17,9 @@ func TestMultAssignWithField(t *testing.T) {
 	a.b, err2 = f()
 	log.Println(a, err2)
 }
+
+func TestReassign(t *testing.T) {
+	a := 1
+	a, b := 2, 3
+	println(a, b)
+}

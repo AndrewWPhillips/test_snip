@@ -26,11 +26,19 @@ func TestArrayReturn(t *testing.T) {
 
 	// Can't slice an array that is returned
 	//fmt.Println(f()[:2]) // invalid operation f()[:2] (slice of unaddressable value)
+	fmt.Println(f()[0])
+
+	// Can't slice an array literal?
+	//fmt.Println([4]int{1, 2, 3, 4}[:])
 
 	// Assign to a temporary to allow slicing
 	tmp := f()
 	fmt.Println(tmp[:2]) // OK, prints: [1 2]
 }
+
+func getArray() (r [5]int) { return }
+
+// const shouldBeConstant5 = len(getArray()) // ERROR: len(getArray()) is not a constant
 
 func TestArrayLiteral(t *testing.T) {
 	// Can't slice an array literal either
